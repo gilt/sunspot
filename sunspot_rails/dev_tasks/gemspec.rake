@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'tools', 'gem_tasks')
 
 Sunspot::GemTasks.new do |s|
-  s.name = 'sunspot_rails'
+  s.name = 'gilt_sunspot_rails'
   s.version = Sunspot::Rails::VERSION
   s.summary = 'Rails integration for the Sunspot Solr search library'
   s.email = 'mat@patch.com'
