@@ -205,11 +205,9 @@ module Sunspot #:nodoc:
             remove_all_from_index if options[:reindex]
             unless options[:batch_size]
               records = all(:include => options[:include])
-              Sunspot.index!(records)
               if records.last
+                Sunspot.index!(records)
                 last_id = records.last.send(options[:batch_column])
-              else
-                last_id = nil
               end
             else
               offset = 0
@@ -218,11 +216,11 @@ module Sunspot #:nodoc:
               while(offset < record_count)
                 benchmark options[:batch_size], counter do
                   records = all(:include => options[:include], :conditions => ["#{table_name}.#{options[:batch_column]} > ?", last_id], :limit => options[:batch_size], :order => options[:batch_column])
-                  Sunspot.index(records)
                   if records.last
+                    Sunspot.index(records)
                     last_id = records.last.send(options[:batch_column])
                   else
-                    last_id = nil
+                    break
                   end
                 end
                 Sunspot.commit if options[:batch_commit]
@@ -232,7 +230,7 @@ module Sunspot #:nodoc:
               Sunspot.commit unless options[:batch_commit]
             end
           end
-          return last_id
+          return (last_id != options[:first_id] ? last_id : nil)
         end
 
         #
